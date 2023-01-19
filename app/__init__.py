@@ -1,3 +1,4 @@
+import pymongo
 from flask import Flask
 from flask_restx import Api, Resource, fields
 from pymongo import MongoClient
@@ -40,11 +41,12 @@ profile_model = api.model('Profiles', {
 })
 
 
-@profile_ns.route('')
+@profile_ns.route('/<string:city>')
 class ProfilesView(Resource):
     @api.marshal_with(profiles_model, envelope='resource')
-    def get(self):
-        profiles = list(client.WeFriiendsUsers.profiles.find({}))
+    def get(self, city):
+        profiles = list(
+            client.WeFriiendsUsers.profiles.find({'location.city': city.title()}).sort('createdAt', pymongo.ASCENDING))
         return profiles, 200
 
 
