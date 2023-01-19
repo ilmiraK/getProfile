@@ -41,12 +41,12 @@ profile_model = api.model('Profiles', {
 })
 
 
-@profile_ns.route('/<string:city>')
+@profile_ns.route('/<string:country>&<string:city>')
 class ProfilesView(Resource):
     @api.marshal_with(profiles_model, envelope='resource')
-    def get(self, city):
+    def get(self, country, city):
         profiles = list(
-            client.WeFriiendsUsers.profiles.find({'location.city': city.title()}).sort('createdAt', pymongo.ASCENDING))
+            client.WeFriiendsUsers.profiles.find({'location.country': country.title(), 'location.city': city.title()}).sort('createdAt', pymongo.ASCENDING))
         return profiles, 200
 
 
